@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# hoodfrenzy — landing page
 
-## Getting Started
+Waitlist landing page for the hoodfrenzy launchpad. Next.js 16 (App Router,
+Turbopack) + Tailwind v4, with signups stored in Supabase.
 
-First, run the development server:
+## Local development
 
 ```bash
+npm install
+cp .env.local.example .env.local   # then fill in the two values
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Both are public by design and get inlined into the browser bundle. They are
+safe there because the database is protected by Row Level Security — see
+`supabase/waitlist.sql`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Where to find it | Required |
+| --- | --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Project Settings → Data API → **Project URL** | yes |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase → Project Settings → API Keys → publishable / anon key | yes |
+| `NEXT_PUBLIC_SITE_URL` | Your production URL, e.g. `https://hoodfrenzy.com` | recommended |
 
-## Learn More
+Notes:
 
-To learn more about Next.js, take a look at the following resources:
+- `NEXT_PUBLIC_SUPABASE_URL` must be the **Project URL with no path**
+  (`https://<ref>.supabase.co`). Pasting the REST endpoint
+  (`.../rest/v1/`) makes every request 404, because supabase-js appends
+  `/rest/v1` itself.
+- Never use a `service_role` / `sb_secret_…` key here. Anything prefixed
+  `NEXT_PUBLIC_` ships to every visitor, and the service key bypasses RLS.
+- `NEXT_PUBLIC_SITE_URL` only affects absolute URLs in the OG/Twitter card
+  metadata. Without it, preview deploys fall back to `VERCEL_URL` and local
+  falls back to `localhost:3000`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Database
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Run `supabase/waitlist.sql` once in the Supabase SQL editor. It creates the
+`waitlist` table and sets the access model:
 
-## Deploy on Vercel
+- `anon` may **INSERT only** — no select, update or delete.
+- There is deliberately **no SELECT policy**, so the email/wallet list cannot
+  be read with the public key.
+- The public signup count comes from `waitlist_count()`, a security-definer
+  function returning a single number.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deploying to Vercel
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Push this directory to its own Git repository.
+2. In Vercel: **New Project** → import the repo. Framework preset is detected
+   as Next.js; leave Root Directory as `./`.
+3. Add the environment variables above under **Settings → Environment
+   Variables** (Production *and* Preview). They are not in the repo — Vercel
+   cannot pick them up from `.env.local`.
+4. Deploy.
+
+After the first deploy, set `NEXT_PUBLIC_SITE_URL` to the real domain and
+redeploy so social cards resolve against it.
+
+## Scripts
+
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Dev server |
+| `npm run build` | Production build |
+| `npm start` | Serve the production build locally |
+| `npm run lint` | ESLint |
