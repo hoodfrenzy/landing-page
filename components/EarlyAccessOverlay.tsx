@@ -96,7 +96,7 @@ export default function EarlyAccessOverlay() {
           ✕
         </button>
 
-        <div className="rounded-2xl border border-[#1f1f1f] bg-[#0b0b0b]/90 p-7 shadow-[0_0_80px_rgba(200,255,0,0.06)] backdrop-blur-sm">
+        <div className="max-h-[90vh] overflow-y-auto rounded-2xl border border-[#1f1f1f] bg-[#0b0b0b]/90 p-7 shadow-[0_0_80px_rgba(200,255,0,0.06)] backdrop-blur-sm">
           <div className="mb-6 text-center">
             <img
               src="/Frame 10.svg"

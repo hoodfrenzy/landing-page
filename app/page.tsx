@@ -1,27 +1,20 @@
 import Scene from "@/components/Scene";
 import HeroZoom from "@/components/HeroZoom";
-import EarlyAccessTrigger from "@/components/EarlyAccessTrigger";
 import EarlyAccessOverlay from "@/components/EarlyAccessOverlay";
 import WaitlistStats from "@/components/WaitlistStats";
+import SiteNav from "@/components/SiteNav";
+import ReferralCapture from "@/components/ReferralCapture";
 
 export default function LandingPage() {
   return (
     <div className="relative h-screen overflow-hidden bg-[#0a0a0a] text-white">
+      <ReferralCapture openWaitlist />
       {/* Dots + tokens share one camera and sit behind everything */}
       <Scene />
 
       <HeroZoom>
         <div className="relative z-20 flex h-full flex-col">
-          {/* Nav */}
-          <nav className="shrink-0 px-6 py-5">
-            <div className="mx-auto flex max-w-7xl items-center justify-between">
-              <div className="flex items-center gap-2">
-                <img src="/Frame 10.svg" alt="hoodfrenzy" className="h-7 w-7" />
-                <img src="/wordmark.svg" alt="hoodfrenzy" className="h-5" />
-              </div>
-              <EarlyAccessTrigger className="rounded-full bg-[#c8ff00] px-5 py-2.5 text-sm font-semibold text-[#0a0a0a] transition-opacity hover:opacity-90" />
-            </div>
-          </nav>
+          <SiteNav active="home" />
 
           {/* Headline */}
           <div className="shrink-0 px-6 pt-6 sm:pt-10">

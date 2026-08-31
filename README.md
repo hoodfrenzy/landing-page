@@ -37,14 +37,35 @@ Notes:
 
 ## Database
 
-Run `supabase/waitlist.sql` once in the Supabase SQL editor. It creates the
-`waitlist` table and sets the access model:
+Run these once in the Supabase SQL editor, in order:
 
-- `anon` may **INSERT only** — no select, update or delete.
-- There is deliberately **no SELECT policy**, so the email/wallet list cannot
-  be read with the public key.
-- The public signup count comes from `waitlist_count()`, a security-definer
-  function returning a single number.
+1. `supabase/waitlist.sql` — table, insert-only RLS, public `waitlist_count()`.
+2. `supabase/referrals.sql` — referral codes, 10/2 point scoring, leaderboard
+   RPCs. Safe to run on a waitlist that already has rows (it backfills codes).
+
+Access model:
+
+- Emails never leave the database through the API. The public board is the
+  **top 50** by points (handle + score only). Anyone can look up **their**
+  rank by email; that lookup does not return an invite code.
+- Signups are **email-verified**. The form sends a Supabase Auth OTP; only
+  `confirm_waitlist()` (which reads `auth.jwt() -> email`) can insert a
+  counted row. Fake addresses cannot farm points.
+- Direct referral = **10** points. Referral of a referral = **2** points.
+  Only verified signups count.
+
+Invite links are `/r/<code>`. Tweeting that URL uses `public/og-image.png` as
+the card.
+
+### Email OTP
+
+In the Supabase dashboard:
+
+1. **Authentication → Providers → Email** — enabled (default on new projects).
+2. **Authentication → URL Configuration** — add `https://<your-domain>/verify`
+   (and `http://localhost:3001/verify` for local) to Redirect URLs.
+
+The waitlist form asks for a 6-digit code. Magic-link clicks land on `/verify`.
 
 ## Deploying to Vercel
 

@@ -9,7 +9,13 @@ const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
  */
 export const supabase =
   url && anonKey
-    ? createClient(url, anonKey, { auth: { persistSession: false } })
+    ? createClient(url, anonKey, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: false,
+          detectSessionInUrl: true,
+        },
+      })
     : null;
 
 export const supabaseConfigured = Boolean(url && anonKey);

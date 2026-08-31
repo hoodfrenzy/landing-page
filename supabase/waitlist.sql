@@ -44,6 +44,7 @@ create policy "anyone can join the waitlist"
   with check (true);
 
 -- Public counter. Security definer so it can count rows the caller cannot read.
+-- referrals.sql replaces this with a verified-only count once that file is run.
 create or replace function public.waitlist_count()
 returns bigint
 language sql
@@ -56,3 +57,6 @@ $$;
 
 revoke all on function public.waitlist_count() from public;
 grant execute on function public.waitlist_count() to anon, authenticated;
+
+-- Referrals, points, and the public leaderboard live in referrals.sql.
+-- Run that file next (existing waitlists too — it ALTERs this table).
