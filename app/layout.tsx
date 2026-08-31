@@ -41,11 +41,13 @@ export const metadata: Metadata = {
     title,
     description,
     url: "/",
+    images: ["/og-image.png"],
   },
   twitter: {
     card: "summary_large_image",
     title,
     description,
+    images: ["/og-image.png"],
   },
   robots: { index: true, follow: true },
 };
