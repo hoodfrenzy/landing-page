@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createClient } from "@supabase/supabase-js";
+import { promises as dns } from "dns";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -21,8 +22,27 @@ export async function POST(request: Request) {
   const wallet = body.wallet != null ? String(body.wallet).trim().toLowerCase() : null;
   const walletClean = wallet && wallet.length > 0 ? wallet : null;
 
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return NextResponse.json({ error: "Invalid email address." }, { status: 400 });
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254 || email.includes("..")) {
+    return NextResponse.json({ error: "That email address doesn't look valid. Check the spelling and try again." }, { status: 400 });
+  }
+  // Resend accepts any syntactically-valid address (even if domain doesn't exist) — do a quick MX/A check ourselves
+  const domain = email.split("@")[1] ?? "";
+  // Block obvious typos / test domains
+  if (/^(test|example|invalid|localhost)$/i.test(domain) || !domain.includes(".")) {
+    return NextResponse.json({ error: "That email domain doesn't look valid. Use a real mailbox like @gmail.com." }, { status: 400 });
+  }
+  try {
+    const mx = await dns.resolveMx(domain).catch(() => null);
+    if (!mx || mx.length === 0) {
+      // No MX — fall back to A/AAAA; if neither exists, domain is not emailable
+      const a = await dns.resolve(domain).catch(() => null);
+      const aaaa = a ? a : await dns.resolve6(domain).catch(() => null);
+      if (!aaaa || (Array.isArray(aaaa) && aaaa.length === 0)) {
+        return NextResponse.json({ error: "That email domain doesn't exist. Check the spelling and try again." }, { status: 400 });
+      }
+    }
+  } catch {
+    // DNS hiccup — don't block, let Resend decide; we handle its 400/422 below
   }
   if (walletClean && !/^0x[0-9a-f]{40}$/.test(walletClean)) {
     return NextResponse.json({ error: "That doesn't look like an EVM address — expected 0x + 40 characters." }, { status: 400 });
@@ -120,7 +140,18 @@ export async function POST(request: Request) {
   if (sendError) {
     console.error("Resend error:", sendError);
     const msg = (sendError as { message?: string; statusCode?: number })?.message ?? "";
-    const code403 = (sendError as { statusCode?: number })?.statusCode === 403;
+    const status = (sendError as { statusCode?: number })?.statusCode;
+    // Resend can tell when the `to` address is malformed or undeliverable — surface it instead of a generic error
+    if (status === 400 || status === 422) {
+      if (/invalid.*(email|to|recipient)|parse.*email|not a valid email|invalid.*domain/i.test(msg)) {
+        await supabase.from("waitlist_codes").delete().eq("email", email).eq("code", code);
+        return NextResponse.json(
+          { error: "That email address doesn't look valid. Check the spelling and try again." },
+          { status: 400 },
+        );
+      }
+    }
+    const code403 = status === 403;
     if (code403 && /verify a domain|testing emails/i.test(msg)) {
       // Clean up the just-inserted code so the user can retry immediately after fixing domain
       await supabase.from("waitlist_codes").delete().eq("email", email).eq("code", code);
@@ -131,6 +162,11 @@ export async function POST(request: Request) {
         },
         { status: 500 },
       );
+    }
+    // Include Resend's message for invalid recipients when available
+    if (/invalid.*(to|recipient|email)/i.test(msg)) {
+      await supabase.from("waitlist_codes").delete().eq("email", email).eq("code", code);
+      return NextResponse.json({ error: msg || "That email address doesn't look valid." }, { status: 400 });
     }
     return NextResponse.json({ error: "Couldn't send a code. Check the email and try again." }, { status: 500 });
   }

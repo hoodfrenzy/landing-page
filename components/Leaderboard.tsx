@@ -290,8 +290,7 @@ export default function Leaderboard() {
       </section>
 
       <p className="text-center text-xs text-[#52525b]">
-        Only verified emails with a valid 0x wallet are featured. Look up your email for your
-        real rank.{" "}
+        Only users with wallet address are featured.{" "}
         <Link href="/" className="text-[#a1a1aa] hover:text-white">
           Back to home
         </Link>

@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { WAITLIST_JOINED } from "./WaitlistStats";
 import ReferralShare from "./ReferralShare";
-import { checkWaitlistTaken, sendWaitlistOtp, verifyWaitlistOtp } from "@/lib/waitlistApi";
+import { checkWaitlistTaken, lookupWaitlistEmail, sendWaitlistOtp, verifyWaitlistOtp } from "@/lib/waitlistApi";
 import {
   readInboundRef,
   writeMyCode,
@@ -62,7 +62,14 @@ export default function WaitlistForm() {
       setError(taken.error);
       return;
     }
-    if (taken.reason === "email") setAlreadyOnList(true);
+    if (taken.reason === "email") {
+      const lookup = await lookupWaitlistEmail(p.email);
+      if (lookup.data) {
+        finish(lookup.data, true);
+        return;
+      }
+      setAlreadyOnList(true);
+    }
     writePendingJoin(p);
     const { error: sendError } = await sendWaitlistOtp(p);
     if (sendError) {
@@ -142,16 +149,21 @@ export default function WaitlistForm() {
     const verifying = status === "verifying";
     return (
       <form onSubmit={handleVerify} className="w-full">
-        <p className="mb-3 text-center text-sm text-[#a1a1aa]">
-          {alreadyOnList ? (
-            "This email is already on the list. Enter the code we sent to recover your invite."
-          ) : (
-            <>
-              We sent a code to <span className="text-white">{email.trim().toLowerCase()}</span>.
-              Enter it to prove the mailbox exists.
-            </>
-          )}
-        </p>
+        <div className="mb-3 flex items-center justify-center gap-2">
+          <span className={`h-2 w-2 rounded-full ${verifying ? "animate-spin border-2 border-[#3f3f46] border-t-[#c8ff00] h-3 w-3" : "animate-pulse bg-[#c8ff00] shadow-[0_0_8px_#c8ff00]"}`} />
+          <p className="text-center text-sm text-[#a1a1aa]">
+            {verifying ? (
+              "Verifying code…"
+            ) : alreadyOnList ? (
+              "This email is already on the list. Enter the code we sent to recover your invite."
+            ) : (
+              <>
+                We sent a code to <span className="text-white">{email.trim().toLowerCase()}</span>. Waiting
+                for your code…
+              </>
+            )}
+          </p>
+        </div>
         <input
           type="text"
           inputMode="numeric"
@@ -231,7 +243,7 @@ export default function WaitlistForm() {
       </div>
 
       <p className={`mt-3 text-center text-xs ${error ? "text-[#ef4444]" : "text-[#71717a]"}`}>
-        {error || "We'll email a code — fake addresses don't get points."}
+        {error || "We'll email a code."}
       </p>
 
       <p className="mt-4 border-t border-[#1a1a1a] pt-4 text-center text-[11px] leading-relaxed text-[#52525b]">
