@@ -1,0 +1,107 @@
+import { NextResponse } from "next/server";
+import { Resend } from "resend";
+import { createClient } from "@supabase/supabase-js";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+function supabaseAdmin() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
+}
+
+function generateCode(): string {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+export async function POST(request: Request) {
+  const body = await request.json();
+  const email = (body.email ?? "").trim().toLowerCase();
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return NextResponse.json({ error: "Invalid email address." }, { status: 400 });
+  }
+
+  const supabase = supabaseAdmin();
+  if (!supabase) {
+    return NextResponse.json({ error: "Server not configured." }, { status: 500 });
+  }
+
+  // Rate limit: max 1 code per 60 seconds per email
+  const { data: recent } = await supabase
+    .from("waitlist_codes")
+    .select("id")
+    .eq("email", email)
+    .gt("created_at", new Date(Date.now() - 60_000).toISOString())
+    .limit(1);
+
+  if (recent && recent.length > 0) {
+    return NextResponse.json(
+      { error: "Too many codes sent. Wait a minute and try again." },
+      { status: 429 },
+    );
+  }
+
+  const code = generateCode();
+  const expiresAt = new Date(Date.now() + 10 * 60_000).toISOString(); // 10 minutes
+
+  const { error: insertError } = await supabase.from("waitlist_codes").insert({
+    email,
+    code,
+    expires_at: expiresAt,
+  });
+
+  if (insertError) {
+    console.error("Failed to store code:", insertError);
+    if ((insertError as { code?: string }).code === "PGRST205") {
+      return NextResponse.json(
+        { error: "Server setup incomplete — run supabase/resend-otp.sql in Supabase SQL Editor, then retry." },
+        { status: 500 },
+      );
+    }
+    return NextResponse.json({ error: "Couldn't send a code. Try again." }, { status: 500 });
+  }
+
+  const fromEmail = process.env.RESEND_FROM_EMAIL ?? "HoodFrenzy <onboarding@resend.dev>";
+  const { error: sendError } = await resend.emails.send({
+    from: fromEmail,
+    to: email,
+    subject: "Your HoodFrenzy verification code",
+    html: `
+      <div style="font-family: sans-serif; max-width: 400px; margin: 0 auto; padding: 32px 0;">
+        <p style="font-size: 14px; color: #666; margin: 0 0 8px;">Your verification code</p>
+        <p style="font-size: 32px; font-weight: bold; letter-spacing: 8px; margin: 0 0 24px; color: #000;">
+          ${code}
+        </p>
+        <p style="font-size: 13px; color: #999; margin: 0;">
+          This code expires in 10 minutes. If you didn't request this, ignore this email.
+        </p>
+      </div>
+    `,
+    text: `Your HoodFrenzy verification code is ${code}\nThis code expires in 10 minutes. If you didn't request this, ignore this email.`,
+    headers: {
+      "X-Entity-Ref-ID": `waitlist-${email}`,
+    },
+  });
+
+  if (sendError) {
+    console.error("Resend error:", sendError);
+    const msg = (sendError as { message?: string; statusCode?: number })?.message ?? "";
+    const code403 = (sendError as { statusCode?: number })?.statusCode === 403;
+    if (code403 && /verify a domain|testing emails/i.test(msg)) {
+      // Clean up the just-inserted code so the user can retry immediately after fixing domain
+      await supabase.from("waitlist_codes").delete().eq("email", email).eq("code", code);
+      return NextResponse.json(
+        {
+          error:
+            "Resend is in test mode — onboarding@resend.dev can only send to your own address (kehindeemmanuel406@gmail.com). Verify a domain at resend.com/domains and set RESEND_FROM_EMAIL in .env.local to an address on that domain (e.g. HoodFrenzy <noreply@yourdomain.com>), then restart the dev server.",
+        },
+        { status: 500 },
+      );
+    }
+    return NextResponse.json({ error: "Couldn't send a code. Check the email and try again." }, { status: 500 });
+  }
+
+  return NextResponse.json({ ok: true });
+}

@@ -1,36 +1,19 @@
 import { supabase } from "./supabase";
 import type { JoinResult, LeaderboardRow, PendingJoin } from "./referrals";
 
-function siteOrigin(): string {
-  if (typeof window !== "undefined") return window.location.origin;
-  return (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/$/, "");
-}
-
 export async function sendWaitlistOtp(pending: PendingJoin): Promise<{ error: string | null }> {
-  if (!supabase) {
-    return { error: "Waitlist isn't connected yet. Set the Supabase env vars." };
+  try {
+    const res = await fetch("/api/waitlist/send-code", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: pending.email }),
+    });
+    const json = await res.json();
+    if (!res.ok) return { error: json.error ?? "Couldn't send a code." };
+    return { error: null };
+  } catch {
+    return { error: "Couldn't send a code. Check the email and try again." };
   }
-  const params = new URLSearchParams();
-  if (pending.ref) params.set("ref", pending.ref);
-  if (pending.wallet) params.set("wallet", pending.wallet);
-  const qs = params.toString();
-  const redirectTo = `${siteOrigin()}/verify${qs ? `?${qs}` : ""}`;
-
-  const { error } = await supabase.auth.signInWithOtp({
-    email: pending.email,
-    options: {
-      shouldCreateUser: true,
-      emailRedirectTo: redirectTo,
-    },
-  });
-  if (!error) return { error: null };
-  if (/rate limit|too many/i.test(error.message)) {
-    return { error: "Too many codes sent. Wait a minute and try again." };
-  }
-  if (/signups not allowed|email logins are disabled|unsupported/i.test(error.message)) {
-    return { error: "Email login isn't enabled on this project. Turn on Email in Supabase Auth." };
-  }
-  return { error: "Couldn't send a code to that address. Check the email and try again." };
 }
 
 export async function verifyWaitlistOtp(opts: {
@@ -39,26 +22,29 @@ export async function verifyWaitlistOtp(opts: {
   wallet: string | null;
   ref: string | null;
 }): Promise<{ data: JoinResult | null; already: boolean; error: string | null }> {
-  if (!supabase) {
-    return { data: null, already: false, error: "Waitlist isn't connected yet. Set the Supabase env vars." };
-  }
-  const { error: otpError } = await supabase.auth.verifyOtp({
-    email: opts.email,
-    token: opts.token.trim(),
-    type: "email",
-  });
-  if (otpError) {
-    if (/expired|invalid|token/i.test(otpError.message)) {
-      return { data: null, already: false, error: "That code is wrong or expired. Request a new one." };
-    }
+  try {
+    const res = await fetch("/api/waitlist/verify-code", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: opts.email,
+        code: opts.token.trim(),
+        wallet: opts.wallet,
+        ref: opts.ref,
+      }),
+    });
+    const json = await res.json();
+    if (!res.ok) return { data: null, already: false, error: json.error ?? "Verification failed." };
+    return { data: json.data, already: json.already ?? false, error: null };
+  } catch {
     return { data: null, already: false, error: "Couldn't verify that code. Try again." };
   }
-  return confirmWaitlist({ wallet: opts.wallet, ref: opts.ref });
 }
 
 export async function confirmWaitlist(opts: {
   wallet: string | null;
   ref: string | null;
+  email?: string | null;
 }): Promise<{ data: JoinResult | null; already: boolean; error: string | null }> {
   if (!supabase) {
     return { data: null, already: false, error: "Waitlist isn't connected yet. Set the Supabase env vars." };
@@ -66,6 +52,7 @@ export async function confirmWaitlist(opts: {
   const { data, error } = await supabase.rpc("confirm_waitlist", {
     p_wallet: opts.wallet,
     p_ref: opts.ref,
+    p_email: opts.email ?? null,
   });
   if (!error && data) {
     const row = data as JoinResult;

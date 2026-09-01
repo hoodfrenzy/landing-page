@@ -144,7 +144,7 @@ export function twitterShareUrl(code: string): string {
     "",
     "Be among the first to access a 2× leveraged token launchpad.",
     "",
-    "Join the waitlist ahead of launch. 🚀",
+    "Join the waitlist ahead of launch. 🚀 — @hoodfrenzy",
   ].join("\n");
   const intent = new URL("https://x.com/intent/tweet");
   intent.searchParams.set("text", text);
