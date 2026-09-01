@@ -18,14 +18,46 @@ function generateCode(): string {
 export async function POST(request: Request) {
   const body = await request.json();
   const email = (body.email ?? "").trim().toLowerCase();
+  const wallet = body.wallet != null ? String(body.wallet).trim().toLowerCase() : null;
+  const walletClean = wallet && wallet.length > 0 ? wallet : null;
 
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return NextResponse.json({ error: "Invalid email address." }, { status: 400 });
+  }
+  if (walletClean && !/^0x[0-9a-f]{40}$/.test(walletClean)) {
+    return NextResponse.json({ error: "That doesn't look like an EVM address — expected 0x + 40 characters." }, { status: 400 });
   }
 
   const supabase = supabaseAdmin();
   if (!supabase) {
     return NextResponse.json({ error: "Server not configured." }, { status: 500 });
+  }
+
+  // Look up wallet/email before sending mail — don't waste a Resend send
+  // on a wallet that's already taken, and surface the error before we generate a code.
+  try {
+    const { data: checkData, error: checkError } = await supabase.rpc("waitlist_check", {
+      p_email: email,
+      p_wallet: walletClean,
+    });
+    if (checkError) {
+      if (/invalid wallet/i.test(checkError.message ?? "")) {
+        return NextResponse.json({ error: "That doesn't look like an EVM address — expected 0x + 40 characters." }, { status: 400 });
+      }
+      // If the RPC is missing (migrations not run), allow the send to proceed — the later insert will surface it
+      if (!/PGRST202|schema cache/i.test(`${checkError.code ?? ""} ${checkError.message ?? ""}`)) {
+        console.error("waitlist_check error:", checkError);
+      }
+    } else {
+      const row = checkData as { ok?: boolean; reason?: "email" | "wallet" | null } | null;
+      if (row?.ok === false && row.reason === "wallet") {
+        return NextResponse.json({ error: "That wallet is already on the waitlist." }, { status: 409 });
+      }
+      // row.reason === "email" means the email is already verified — still allow sending a code
+      // so the user can recover their invite link; don't block the email.
+    }
+  } catch (e) {
+    console.error("waitlist_check failed:", e);
   }
 
   // Rate limit: max 1 code per 60 seconds per email

@@ -6,7 +6,7 @@ export async function sendWaitlistOtp(pending: PendingJoin): Promise<{ error: st
     const res = await fetch("/api/waitlist/send-code", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: pending.email }),
+      body: JSON.stringify({ email: pending.email, wallet: pending.wallet }),
     });
     const json = await res.json();
     if (!res.ok) return { error: json.error ?? "Couldn't send a code." };
