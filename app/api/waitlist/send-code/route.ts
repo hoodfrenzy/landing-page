@@ -3,6 +3,8 @@ import { Resend } from "resend";
 import { createClient } from "@supabase/supabase-js";
 import { promises as dns } from "dns";
 
+export const runtime = "nodejs";
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 function supabaseAdmin() {
