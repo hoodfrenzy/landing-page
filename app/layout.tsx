@@ -12,14 +12,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const title = "levera — launch coins on Robinhood with up to 2× leverage";
+const title = "Levera — Launch and trade memecoins on Robinhood with up to 2× leverage";
 const description =
-  "The launchpad where a coin can rent senior credit and trade at 2x ETH beta. Fixed 1B supply, bonding-curve price discovery, and a raise that graduates into its own AMM. Built on Robinhood Chain.";
+  "Levera is the first leveraged memecoin launchpad on Robinhood Chain.";
 
-/**
- * Absolute URLs for OG/Twitter cards. Set NEXT_PUBLIC_SITE_URL to the real
- * domain in production; VERCEL_URL covers preview deployments automatically.
- */
 function siteUrl(): URL {
   if (process.env.NEXT_PUBLIC_SITE_URL) {
     return new URL(process.env.NEXT_PUBLIC_SITE_URL);
