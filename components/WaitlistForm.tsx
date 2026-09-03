@@ -114,8 +114,8 @@ export default function WaitlistForm() {
   if (status === "joined" || status === "already") {
     return (
       <div className="space-y-4">
-        <div className="flex items-center justify-center gap-3 rounded-full border border-[#c8ff00]/30 bg-[#c8ff00]/[0.06] px-5 py-3 text-sm">
-          <span className="h-2 w-2 shrink-0 rounded-full bg-[#c8ff00] shadow-[0_0_10px_#c8ff00]" />
+        <div className="flex items-center justify-center gap-3 rounded-full border border-[#ECE3D1]/30 bg-[#ECE3D1]/[0.06] px-5 py-3 text-sm">
+          <span className="h-2 w-2 shrink-0 rounded-full bg-[#ECE3D1] shadow-[0_0_10px_#ECE3D1]" />
           <span className="text-[#e4e4e7]">
             {status === "already"
               ? "You're already on the list — here's your invite link."
@@ -131,7 +131,7 @@ export default function WaitlistForm() {
               indirectCount={profile.indirect_count}
             />
             <p className="text-center text-xs">
-              <Link href="/leaderboard" className="text-[#c8ff00] hover:underline">
+              <Link href="/leaderboard" className="text-[#ECE3D1] hover:underline">
                 See the leaderboard
               </Link>
             </p>
@@ -150,7 +150,7 @@ export default function WaitlistForm() {
     return (
       <form onSubmit={handleVerify} className="w-full">
         <div className="mb-3 flex items-center justify-center gap-2">
-          <span className={`h-2 w-2 rounded-full ${verifying ? "animate-spin border-2 border-[#3f3f46] border-t-[#c8ff00] h-3 w-3" : "animate-pulse bg-[#c8ff00] shadow-[0_0_8px_#c8ff00]"}`} />
+          <span className={`h-2 w-2 rounded-full ${verifying ? "animate-spin border-2 border-[#3f3f46] border-t-[#ECE3D1] h-3 w-3" : "animate-pulse bg-[#ECE3D1] shadow-[0_0_8px_#ECE3D1]"}`} />
           <p className="text-center text-sm text-[#a1a1aa]">
             {verifying ? (
               "Verifying code…"
@@ -171,12 +171,12 @@ export default function WaitlistForm() {
           value={code}
           onChange={(e) => setCode(e.target.value.replace(/[^\d]/g, "").slice(0, 8))}
           placeholder="6-digit code"
-          className="w-full rounded-xl border border-[#252525] bg-[#111111] px-4 py-3 text-center font-mono text-lg tracking-[0.4em] text-white transition-colors placeholder:tracking-normal placeholder:text-[#71717a] focus:border-[#c8ff00] focus:outline-none"
+          className="w-full rounded-xl border border-[#252525] bg-[#111111] px-4 py-3 text-center font-mono text-lg tracking-[0.4em] text-white transition-colors placeholder:tracking-normal placeholder:text-[#71717a] focus:border-[#ECE3D1] focus:outline-none"
         />
         <button
           type="submit"
           disabled={verifying || code.trim().length < 6}
-          className="mt-2.5 w-full rounded-xl bg-[#c8ff00] px-6 py-3 font-semibold text-[#0a0a0a] transition-opacity hover:opacity-90 disabled:opacity-60"
+          className="mt-2.5 w-full rounded-xl bg-[#ECE3D1] px-6 py-3 font-semibold text-[#0a0a0a] transition-opacity hover:opacity-90 disabled:opacity-60"
         >
           {verifying ? "Checking…" : "Confirm email"}
         </button>
@@ -223,7 +223,7 @@ export default function WaitlistForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@email.com"
-          className="w-full rounded-xl border border-[#252525] bg-[#111111] px-4 py-3 text-white transition-colors placeholder:text-[#71717a] focus:border-[#c8ff00] focus:outline-none"
+          className="w-full rounded-xl border border-[#252525] bg-[#111111] px-4 py-3 text-white transition-colors placeholder:text-[#71717a] focus:border-[#ECE3D1] focus:outline-none"
         />
         <input
           type="text"
@@ -231,12 +231,12 @@ export default function WaitlistForm() {
           onChange={(e) => setWallet(e.target.value)}
           placeholder="0x… wallet address (optional)"
           spellCheck={false}
-          className="w-full rounded-xl border border-[#252525] bg-[#111111] px-4 py-3 font-mono text-sm text-white transition-colors placeholder:font-sans placeholder:text-[#71717a] focus:border-[#c8ff00] focus:outline-none"
+          className="w-full rounded-xl border border-[#252525] bg-[#111111] px-4 py-3 font-mono text-sm text-white transition-colors placeholder:font-sans placeholder:text-[#71717a] focus:border-[#ECE3D1] focus:outline-none"
         />
         <button
           type="submit"
           disabled={sending}
-          className="w-full rounded-xl bg-[#c8ff00] px-6 py-3 font-semibold text-[#0a0a0a] transition-opacity hover:opacity-90 disabled:opacity-60"
+          className="w-full rounded-xl bg-[#ECE3D1] px-6 py-3 font-semibold text-[#0a0a0a] transition-opacity hover:opacity-90 disabled:opacity-60"
         >
           {sending ? "Sending code…" : "Send verification code"}
         </button>

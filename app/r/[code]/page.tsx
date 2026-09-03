@@ -7,7 +7,7 @@ import EarlyAccessTrigger from "@/components/EarlyAccessTrigger";
 import ReferralCapture from "@/components/ReferralCapture";
 import { sanitizeCode } from "@/lib/referrals";
 
-const title = "Join me on hoodfrenzy";
+const title = "Join me on levera";
 const description =
   "Launch coins on Robinhood with up to 2× leverage. Join the waitlist with this invite.";
 
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description,
     openGraph: {
       type: "website",
-      siteName: "hoodfrenzy",
+      siteName: "levera",
       title,
       description,
       url: path,
@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           url: "/og-image.png",
           width: 1200,
           height: 630,
-          alt: "hoodfrenzy — launch coins on Robinhood with up to 2× leverage",
+          alt: "levera — launch coins on Robinhood with up to 2× leverage",
         },
       ],
     },
@@ -50,21 +50,21 @@ export default async function ReferralInvitePage({ params }: Props) {
   if (!clean) notFound();
 
   return (
-    <div className="min-h-full bg-[#0a0a0a] text-white">
+    <div className="min-h-full bg-[#131514] text-white">
       <ReferralCapture openWaitlist />
       <SiteNav />
       <main className="mx-auto flex w-full max-w-lg flex-col items-center px-6 py-16 text-center">
-        <img src="/Frame 10.svg" alt="" className="h-14 w-14" />
-        <p className="mt-6 text-xs uppercase tracking-[0.2em] text-[#c8ff00]">You&apos;re invited</p>
+        <img src="/logo.svg" alt="" className="h-14 w-14" />
+        <p className="mt-6 text-xs uppercase tracking-[0.2em] text-[#ECE3D1]">You&apos;re invited</p>
         <h1 className="mt-3 text-3xl font-light tracking-tight sm:text-4xl">
           Launch coins on Robinhood with up to{" "}
-          <span className="text-[#c8ff00]">2×</span> leverage
+          <span className="text-[#ECE3D1]">2×</span> leverage
         </h1>
         <p className="mt-4 text-sm text-[#a1a1aa]">
-          Someone saved you a spot on the hoodfrenzy waitlist. Join and you get your own
+          Someone saved you a spot on the levera waitlist. Join and you get your own
           invite link — 10 points per referral, 2 points when they refer too.
         </p>
-        <EarlyAccessTrigger className="mt-8 rounded-full bg-[#c8ff00] px-6 py-3 text-sm font-semibold text-[#0a0a0a] transition-opacity hover:opacity-90" />
+        <EarlyAccessTrigger className="mt-8 rounded-full bg-[#ECE3D1] px-6 py-3 text-sm font-semibold text-[#0a0a0a] transition-opacity hover:opacity-90" />
         <Link href="/leaderboard" className="mt-4 text-sm text-[#a1a1aa] hover:text-white">
           See the leaderboard
         </Link>

@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "hoodfrenzy — launch coins on Robinhood with up to 2× leverage";
+export const alt = "levera — launch coins on Robinhood with up to 2× leverage";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -18,7 +18,7 @@ export default function OpengraphImage() {
           flexDirection: "column",
           justifyContent: "center",
           padding: "0 90px",
-          background: "#0a0a0a",
+          background: "#131514",
           color: "#fafafa",
         }}
       >
@@ -27,11 +27,11 @@ export default function OpengraphImage() {
             display: "flex",
             fontSize: 30,
             letterSpacing: -0.5,
-            color: "#c8ff00",
+            color: "#ECE3D1",
             marginBottom: 34,
           }}
         >
-          hoodfrenzy
+          levera
         </div>
         <div
           style={{
@@ -43,7 +43,7 @@ export default function OpengraphImage() {
           }}
         >
           Launch coins on Robinhood with up to&nbsp;
-          <span style={{ color: "#c8ff00" }}>2×</span>&nbsp;leverage
+          <span style={{ color: "#ECE3D1" }}>2×</span>&nbsp;leverage
         </div>
         <div style={{ display: "flex", fontSize: 30, color: "#a1a1aa", marginTop: 36 }}>
           Launching soon — join the waitlist for early access.

@@ -117,11 +117,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Couldn't send a code. Try again." }, { status: 500 });
   }
 
-  const fromEmail = process.env.RESEND_FROM_EMAIL ?? "HoodFrenzy <onboarding@resend.dev>";
+  const fromEmail = process.env.RESEND_FROM_EMAIL ?? "Levera <hello@hoodfrenzy.fun>";
   const { error: sendError } = await resend.emails.send({
     from: fromEmail,
     to: email,
-    subject: "Your HoodFrenzy verification code",
+    subject: "Your Levera verification code",
     html: `
       <div style="font-family: sans-serif; max-width: 400px; margin: 0 auto; padding: 32px 0;">
         <p style="font-size: 14px; color: #666; margin: 0 0 8px;">Your verification code</p>
@@ -133,7 +133,7 @@ export async function POST(request: Request) {
         </p>
       </div>
     `,
-    text: `Your HoodFrenzy verification code is ${code}\nThis code expires in 10 minutes. If you didn't request this, ignore this email.`,
+    text: `Your Levera verification code is ${code}\nThis code expires in 10 minutes. If you didn't request this, ignore this email.`,
     headers: {
       "X-Entity-Ref-ID": `waitlist-${email}`,
     },
@@ -160,7 +160,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           error:
-            "Resend is in test mode — onboarding@resend.dev can only send to your own address (kehindeemmanuel406@gmail.com). Verify a domain at resend.com/domains and set RESEND_FROM_EMAIL in .env.local to an address on that domain (e.g. HoodFrenzy <noreply@yourdomain.com>), then restart the dev server.",
+            "Resend is in test mode — onboarding@resend.dev can only send to your own address (kehindeemmanuel406@gmail.com). Verify a domain at resend.com/domains and set RESEND_FROM_EMAIL in .env.local to an address on that domain (e.g. Levera <noreply@yourdomain.com>), then restart the dev server.",
         },
         { status: 500 },
       );

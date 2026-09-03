@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-export const alt = "hoodfrenzy — launch coins on Robinhood with up to 2× leverage";
+export const alt = "levera — launch coins on Robinhood with up to 2× leverage";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const runtime = "nodejs";

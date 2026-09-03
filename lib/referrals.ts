@@ -140,11 +140,11 @@ export function clearPendingJoin() {
 export function twitterShareUrl(code: string): string {
   const url = referralUrl(code);
   const text = [
-    "HoodFrenzy is bringing a new way to launch and trade tokens on Robinhood Chain.",
+    "Levera is bringing a new way to launch and trade tokens on Robinhood Chain.",
     "",
     "Be among the first to access a 2× leveraged token launchpad.",
     "",
-    "Join the waitlist ahead of launch. 🚀 — @hoodfrenzy",
+    "Join the waitlist ahead of launch. 🚀 — @levera",
   ].join("\n");
   const intent = new URL("https://x.com/intent/tweet");
   intent.searchParams.set("text", text);

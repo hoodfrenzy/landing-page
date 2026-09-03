@@ -96,15 +96,15 @@ export default function EarlyAccessOverlay() {
           ✕
         </button>
 
-        <div className="max-h-[90vh] overflow-y-auto rounded-2xl border border-[#1f1f1f] bg-[#0b0b0b]/90 p-7 shadow-[0_0_80px_rgba(200,255,0,0.06)] backdrop-blur-sm">
+        <div className="max-h-[90vh] overflow-y-auto rounded-2xl border border-[#1f1f1f] bg-[#0b0b0b]/90 p-7 shadow-[0_0_80px_rgba(236,227,209,0.06)] backdrop-blur-sm">
           <div className="mb-6 text-center">
             <img
-              src="/Frame 10.svg"
+              src="/logo.svg"
               alt=""
               className="mx-auto mb-4 h-10 w-10"
               style={{
                 filter:
-                  "drop-shadow(0 0 6px rgba(200,255,0,0.8)) drop-shadow(0 0 20px rgba(200,255,0,0.35))",
+                  "drop-shadow(0 0 6px rgba(236,227,209,0.8)) drop-shadow(0 0 20px rgba(236,227,209,0.35))",
               }}
             />
             <h2 className="text-xl font-medium text-white">Get early access</h2>

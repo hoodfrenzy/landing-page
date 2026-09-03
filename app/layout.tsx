@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const title = "hoodfrenzy — launch coins on Robinhood with up to 2× leverage";
+const title = "levera — launch coins on Robinhood with up to 2× leverage";
 const description =
   "The launchpad where a coin can rent senior credit and trade at 2x ETH beta. Fixed 1B supply, bonding-curve price discovery, and a raise that graduates into its own AMM. Built on Robinhood Chain.";
 
@@ -34,10 +34,10 @@ export const metadata: Metadata = {
   metadataBase: siteUrl(),
   title,
   description,
-  applicationName: "hoodfrenzy",
+  applicationName: "levera",
   openGraph: {
     type: "website",
-    siteName: "hoodfrenzy",
+    siteName: "levera",
     title,
     description,
     url: "/",
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport = {
-  themeColor: "#0a0a0a",
+  themeColor: "#131514",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

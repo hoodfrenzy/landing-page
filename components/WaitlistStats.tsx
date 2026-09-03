@@ -38,7 +38,7 @@ export default function WaitlistStats() {
       <div>
         <dt className="text-sm text-[#71717a]">Leverage</dt>
         <dd className="mt-1 text-2xl font-medium text-[#fafafa] sm:text-3xl">
-          Up to <span className="text-[#c8ff00]">2×</span>
+          Up to <span className="text-[#ECE3D1]">2×</span>
         </dd>
       </div>
     </dl>

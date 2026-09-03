@@ -56,7 +56,7 @@ export default function ReferralShare({
         href={twitterShareUrl(code)}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#c8ff00] px-4 py-3 text-sm font-semibold text-[#0a0a0a] transition-opacity hover:opacity-90"
+        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#ECE3D1] px-4 py-3 text-sm font-semibold text-[#0a0a0a] transition-opacity hover:opacity-90"
       >
         <XLogo />
         Share on X

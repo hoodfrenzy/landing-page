@@ -77,7 +77,7 @@ export default function Leaderboard() {
   return (
     <div className="mx-auto w-full max-w-3xl space-y-8 px-6 pb-16">
       <header className="pt-4 text-center sm:pt-8">
-        <p className="text-xs uppercase tracking-[0.2em] text-[#c8ff00]">Waitlist</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-[#ECE3D1]">Waitlist</p>
         <h1 className="mt-3 text-3xl font-light tracking-tight sm:text-4xl">Leaderboard</h1>
         <p className="mx-auto mt-3 max-w-md text-sm text-[#a1a1aa]">
           Earn {DIRECT_POINTS} XP for every person who joins with your invite, and {INDIRECT_POINTS}{" "}
@@ -93,7 +93,7 @@ export default function Leaderboard() {
               <p className="mt-1 font-mono text-lg text-white">{me.handle}</p>
             </div>
             <div className="text-right">
-              <p className="text-3xl font-medium tabular-nums text-[#c8ff00]">{me.points}</p>
+              <p className="text-3xl font-medium tabular-nums text-[#ECE3D1]">{me.points}</p>
               <p className="text-xs text-[#71717a]">
                 {myRank ? `Rank #${myRank}` : "Unranked"} · {me.direct_count} direct · {me.indirect_count}{" "}
                 second-degree
@@ -120,12 +120,12 @@ export default function Leaderboard() {
             onChange={(e) => setLookupQuery(e.target.value)}
             placeholder="your email or 0x wallet"
             spellCheck={false}
-            className="min-w-0 flex-1 rounded-xl border border-[#252525] bg-[#111111] px-4 py-3 text-white transition-colors placeholder:text-[#71717a] focus:border-[#c8ff00] focus:outline-none"
+            className="min-w-0 flex-1 rounded-xl border border-[#252525] bg-[#111111] px-4 py-3 text-white transition-colors placeholder:text-[#71717a] focus:border-[#ECE3D1] focus:outline-none"
           />
           <button
             type="submit"
             disabled={looking}
-            className="rounded-xl bg-[#c8ff00] px-5 py-3 text-sm font-semibold text-[#0a0a0a] transition-opacity hover:opacity-90 disabled:opacity-60"
+            className="rounded-xl bg-[#ECE3D1] px-5 py-3 text-sm font-semibold text-[#0a0a0a] transition-opacity hover:opacity-90 disabled:opacity-60"
           >
             {looking ? "Looking…" : "Look up"}
           </button>
@@ -135,7 +135,7 @@ export default function Leaderboard() {
         ) : lookup === "missing" ? (
           <p className="mt-3 text-sm text-[#a1a1aa]">
             No signup for that email or wallet.{" "}
-            <EarlyAccessTrigger className="text-[#c8ff00] underline-offset-2 hover:underline">
+            <EarlyAccessTrigger className="text-[#ECE3D1] underline-offset-2 hover:underline">
               Join the waitlist
             </EarlyAccessTrigger>
             .
@@ -143,7 +143,7 @@ export default function Leaderboard() {
         ) : lookup?.status === "unverified" ? (
           <p className="mt-3 text-sm text-[#a1a1aa]">
             That email is on the list but hasn&apos;t been verified, so it has no rank yet.{" "}
-            <EarlyAccessTrigger className="text-[#c8ff00] underline-offset-2 hover:underline">
+            <EarlyAccessTrigger className="text-[#ECE3D1] underline-offset-2 hover:underline">
               Send a code
             </EarlyAccessTrigger>
             .
@@ -167,7 +167,7 @@ export default function Leaderboard() {
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-xl font-medium tabular-nums text-[#c8ff00]">
+                <p className="text-xl font-medium tabular-nums text-[#ECE3D1]">
                   {lookup.rank ? `#${lookup.rank}` : "—"}
                 </p>
                 <p className="text-xs text-[#71717a]">{lookup.points} XP</p>
@@ -208,7 +208,7 @@ export default function Leaderboard() {
               <tr>
                 <td colSpan={5} className="px-4 py-10 text-center text-[#71717a]">
                   No one on the board yet.{" "}
-                  <EarlyAccessTrigger className="text-[#c8ff00] underline-offset-2 hover:underline">
+                  <EarlyAccessTrigger className="text-[#ECE3D1] underline-offset-2 hover:underline">
                     Be first.
                   </EarlyAccessTrigger>
                 </td>
@@ -220,13 +220,13 @@ export default function Leaderboard() {
                   <tr
                     key={r.referral_code}
                     className={`border-t border-[#1a1a1a] ${
-                      mine ? "bg-[#c8ff00]/[0.06]" : "bg-[#0b0b0b]"
+                      mine ? "bg-[#ECE3D1]/[0.06]" : "bg-[#0b0b0b]"
                     }`}
                   >
                     <td className="px-4 py-3 tabular-nums text-[#a1a1aa]">{r.rank}</td>
                     <td className="px-4 py-3 font-mono text-xs text-white sm:text-sm">
                       {r.handle}
-                      {mine ? <span className="ml-2 text-[10px] text-[#c8ff00]">you</span> : null}
+                      {mine ? <span className="ml-2 text-[10px] text-[#ECE3D1]">you</span> : null}
                     </td>
                     <td className="px-4 py-3 text-right tabular-nums text-[#a1a1aa]">
                       {r.direct_count}
@@ -234,7 +234,7 @@ export default function Leaderboard() {
                     <td className="hidden px-4 py-3 text-right tabular-nums text-[#a1a1aa] sm:table-cell">
                       {r.indirect_count}
                     </td>
-                    <td className="px-4 py-3 text-right font-medium tabular-nums text-[#c8ff00]">
+                    <td className="px-4 py-3 text-right font-medium tabular-nums text-[#ECE3D1]">
                       {r.points}
                     </td>
                   </tr>
@@ -254,7 +254,7 @@ export default function Leaderboard() {
                     type="button"
                     onClick={() => changePageSize(n)}
                     className={`rounded-md px-2.5 py-1 tabular-nums transition-colors ${
-                      pageSize === n ? "bg-[#c8ff00] text-[#0a0a0a]" : "text-[#a1a1aa] hover:text-white"
+                      pageSize === n ? "bg-[#ECE3D1] text-[#0a0a0a]" : "text-[#a1a1aa] hover:text-white"
                     }`}
                   >
                     {n}

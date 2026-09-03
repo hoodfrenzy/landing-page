@@ -7,7 +7,7 @@ import ReferralCapture from "@/components/ReferralCapture";
 
 export default function LandingPage() {
   return (
-    <div className="relative h-screen overflow-hidden bg-[#0a0a0a] text-white">
+    <div className="relative h-screen overflow-hidden bg-[#131514] text-white">
       <ReferralCapture openWaitlist />
       {/* Dots + tokens share one camera and sit behind everything */}
       <Scene />
@@ -23,7 +23,7 @@ export default function LandingPage() {
                 Launch coins on Robinhood with{" "}
                 <span className="whitespace-nowrap">
                   up to{" "}
-                  <span className="font-normal text-[#c8ff00] [text-shadow:0_0_28px_rgba(200,255,0,0.35)]">
+                  <span className="font-normal text-[#ECE3D1] [text-shadow:0_0_28px_rgba(236,227,209,0.35)]">
                     2×
                   </span>{" "}
                   leverage

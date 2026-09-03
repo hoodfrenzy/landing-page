@@ -25,7 +25,7 @@ const MIN_DOTS = 1800;
 const MAX_DOTS = 9000;
 
 const WHITE = [236, 240, 230] as const;
-const LIME = [200, 255, 0] as const;
+const LIME = [236, 227, 209] as const;
 const LIME_SHARE = 0.3; // 70% white / 30% brand, picked at random per dot
 
 const ENTRANCE_MS = 2100;

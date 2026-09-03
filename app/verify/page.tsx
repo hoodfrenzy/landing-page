@@ -70,7 +70,7 @@ export default function VerifyPage() {
   }, []);
 
   return (
-    <div className="min-h-full bg-[#0a0a0a] text-white">
+    <div className="min-h-full bg-[#131514] text-white">
       <SiteNav />
       <main className="mx-auto w-full max-w-md px-6 py-16">
         {phase === "working" ? (
@@ -80,7 +80,7 @@ export default function VerifyPage() {
         {phase === "error" ? (
           <div className="space-y-4 text-center">
             <p className="text-sm text-[#ef4444]">{error}</p>
-            <Link href="/" className="text-sm text-[#c8ff00] hover:underline">
+            <Link href="/" className="text-sm text-[#ECE3D1] hover:underline">
               Back to the waitlist
             </Link>
           </div>
@@ -88,8 +88,8 @@ export default function VerifyPage() {
 
         {phase === "joined" || phase === "already" ? (
           <div className="space-y-4">
-            <div className="flex items-center justify-center gap-3 rounded-full border border-[#c8ff00]/30 bg-[#c8ff00]/[0.06] px-5 py-3 text-sm">
-              <span className="h-2 w-2 shrink-0 rounded-full bg-[#c8ff00] shadow-[0_0_10px_#c8ff00]" />
+            <div className="flex items-center justify-center gap-3 rounded-full border border-[#ECE3D1]/30 bg-[#ECE3D1]/[0.06] px-5 py-3 text-sm">
+              <span className="h-2 w-2 shrink-0 rounded-full bg-[#ECE3D1] shadow-[0_0_10px_#ECE3D1]" />
               <span className="text-[#e4e4e7]">
                 {phase === "already"
                   ? "This email is already verified."
@@ -105,7 +105,7 @@ export default function VerifyPage() {
                   indirectCount={profile.indirect_count}
                 />
                 <p className="text-center text-xs">
-                  <Link href="/leaderboard" className="text-[#c8ff00] hover:underline">
+                  <Link href="/leaderboard" className="text-[#ECE3D1] hover:underline">
                     See the leaderboard
                   </Link>
                 </p>
